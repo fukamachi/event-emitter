@@ -18,4 +18,5 @@
   :author "Eitaro Fukamachi"
   :license "BSD 2-Clause"
   :components ((:file "src/event-emitter"))
-  :description "Event mechanism for Common Lisp objects")
+  :description "Event mechanism for Common Lisp objects"
+  :in-order-to ((test-op (test-op event-emitter-test))))
