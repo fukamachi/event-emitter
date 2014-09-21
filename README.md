@@ -34,7 +34,7 @@ Mostly ported from [Node.js 'events' module](http://nodejs.org/api/events.html).
       (lambda ()
         (format t "How's it going?")))
 
-;; 'Hi!' and "How's going?" will be printed.
+;; 'Hi!' and "How's it going?" will be printed.
 (emit :say-hi *user*)
 ;-> Hi!
 ;   How's it going?
