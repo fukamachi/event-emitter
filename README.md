@@ -47,9 +47,9 @@ Mostly ported from [Node.js 'events' module](http://nodejs.org/api/events.html).
 ;-> Hi!
 ```
 
-## Differences from 'event-glue'
+## 'event-glue'
 
-Although there's already similar library named [event-glue](https://github.com/orthecreedence/event-glue/), it fires events globally. On the other hand, Event Emitter fires an event only to a specific object.
+There's already similar library named [event-glue](https://github.com/orthecreedence/event-glue/) which you may like to know.
 
 ## API
 
