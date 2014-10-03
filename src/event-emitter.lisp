@@ -58,6 +58,7 @@
     (setf (gethash event silo)
           (delete listener listeners
                   :test #'eq
+                  :count 1
                   :key #'listener-function)))
   (values))
 
