@@ -5,11 +5,10 @@
 
 (defsystem event-emitter-test
   :depends-on (:event-emitter
-               :cl-test-more)
-  :components ((:file "t/event-emitter"))
+               :prove)
+  :components ((:test-file "t/event-emitter"))
 
-  :defsystem-depends-on (:cl-test-more)
+  :defsystem-depends-on (:prove)
   :perform (test-op :after (op c)
-                    (funcall (intern #. (string :run-test-system) :cl-test-more)
-                             c)
-                    (asdf:clear-system c)))
+                    (declare (ignore op))
+                    (funcall (intern #.(string :run-test-system) :prove) c)))
