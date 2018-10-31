@@ -87,7 +87,7 @@
                (apply fn args)
                (when (listener-once listener)
                  (remove-listener object event fn))))
-         listeners)
+         (copy-seq listeners))
     T))
 
 (defun listener-count (object event)
