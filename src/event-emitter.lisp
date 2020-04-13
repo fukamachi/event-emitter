@@ -26,24 +26,24 @@
 (defun silo (object)
   (slot-value object 'silo))
 
-(defun %add-listener (object event listener)
-  (let* ((silo (silo object))
-         (listeners (gethash event silo)))
-    (if listeners
-        (progn (vector-push-extend listener listeners)
-               listeners)
-        (setf (gethash event silo)
-              (make-array 1 :element-type 'listener
-                            :adjustable t :fill-pointer 1
-                            :initial-contents (list listener))))))
+(defun %add-listener (silo event listener &aux (listeners (gethash event silo)))
+  (flet ((reinit-silo (&aux (length (1+ (length listeners))))
+           (setf (gethash event silo)
+                 (make-array length :element-type 'listener :adjustable t
+                             :fill-pointer length :initial-contents
+                             (cons listener (coerce listeners 'list))))))
+    (multiple-value-bind (vector failed)
+        (with-simple-restart (continue "Allocate a new non-simple array")
+          (if listeners (vector-push-extend listener listeners) (reinit-silo)))
+      (if (not failed) vector (reinit-silo)))))
 
 (declaim (inline add-listener))
 (defun add-listener (object event listener)
-  (%add-listener object event (make-listener listener)))
+  (%add-listener (silo object) event (make-listener listener)))
 
 (declaim (inline on))
 (defun on (event object listener)
-  (%add-listener object event (make-listener listener)))
+  (%add-listener (silo object) event (make-listener listener)))
 
 (declaim (inline once))
 (defun once (event object listener)
