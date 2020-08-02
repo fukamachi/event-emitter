@@ -24,7 +24,11 @@
 
 (declaim (inline silo))
 (defun silo (object)
-  (slot-value object 'silo))
+  (typecase object
+    (event-emitter*
+     (event-emitter*-silo object))
+    (t
+     (slot-value object 'silo))))
 
 (defun %add-listener (object event listener)
   (let* ((silo (silo object))
