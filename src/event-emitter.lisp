@@ -55,11 +55,15 @@
     (unless listeners
       (return-from remove-listener))
 
-    (setf (gethash event silo)
-          (delete listener listeners
-                  :test #'eq
-                  :count 1
-                  :key #'listener-function)))
+    (let ((new-silo (delete listener listeners
+                            :test #'eq
+                            :count 1
+                            :key #'listener-function)))
+      ;; Per spec, delete need not return an adjustable array with a fill pointer
+      ;; like we need, so ensure it does or create a new one
+      (unless (and (adjustable-array-p new-silo) (array-has-fill-pointer-p new-silo))
+        (setf new-silo (make-array (length new-silo) :element-type 'listener :adjustable t :fill-pointer (length new-silo) :initial-contents new-silo)))
+      (setf (gethash event silo) new-silo)))
   (values))
 
 (defun remove-all-listeners (object &optional event)
