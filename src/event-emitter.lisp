@@ -49,7 +49,7 @@
 (defun once (event object listener)
   (%add-listener object event (make-listener listener :once t)))
 
-(defun remove-listener (object event listener)
+(defun remove-listener (object event listener &key(start 0))
   (let* ((silo (silo object))
          (listeners (gethash event silo)))
     (unless listeners
@@ -59,6 +59,7 @@
           (delete listener listeners
                   :test #'eq
                   :count 1
+				  :start start
                   :key #'listener-function)))
   (values))
 
@@ -78,16 +79,20 @@
                             :adjustable t :fill-pointer 0)))))
 
 (defun emit (event object &rest args)
-  (let ((listeners (listeners object event)))
-    (when (zerop (length listeners))
+  (let* ((listeners (listeners object event))
+		 (max-size (length listeners)))
+    (when (zerop max-size)
       (return-from emit nil))
-
-    (map nil (lambda (listener)
-             (let ((fn (listener-function listener)))
-               (apply fn args)
-               (when (listener-once listener)
-                 (remove-listener object event fn))))
-         (copy-seq listeners))
+	
+	(dotimes (indx max-size)
+	  (apply (listener-function (elt listeners indx)) args))
+	(do ((indx 0 (1+ indx)))
+		((>= indx max-size))
+	  (when (listener-once (elt listeners indx))
+		(remove-listener object event (listener-function (elt listeners indx))
+						 :start indx)
+		  (decf max-size)
+		  (decf indx)))
     t))
 
 (defun listener-count (object event)
