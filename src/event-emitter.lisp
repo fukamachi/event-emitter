@@ -84,10 +84,11 @@
     (when (zerop max-size)
       (return-from emit nil))
 	
-	(dotimes (indx max-size)
-	  (apply (listener-function (elt listeners indx)) args))
+	;; (dotimes (indx max-size)
+	;;   (apply (listener-function (elt listeners indx)) args))
 	(do ((indx 0 (1+ indx)))
 		((>= indx max-size))
+	   (apply (listener-function (elt listeners indx)) args)
 	  (when (listener-once (elt listeners indx))
 		(remove-listener object event (listener-function (elt listeners indx))
 						 :start indx)
