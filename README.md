@@ -67,7 +67,7 @@ Base standard class for 'event-emitter's.
 Base strucuture class for 'event-emitter's.
 
 ```common-lisp
-(defstruct (person :include event-emitter*)
+(defstruct (person (:include event-emitter*))
   name)
 ```
 
