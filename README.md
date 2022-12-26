@@ -122,6 +122,11 @@ Executes each of the listeners in order with the supplied arguments.
 
 Returns `T` if the event had listeners, `NIL` otherwise.
 
+`EMIT` function sets up a `REMOVE-LISTENER` restart. This restart could be
+used to remove current listener which might be useful if during the call
+to the listener some unrecoverable error was encountered or if
+the listener discovers its obsolescence.
+
 ### \[Function] (listener-count object event)
 
 Returns the number of listeners for a given event.
