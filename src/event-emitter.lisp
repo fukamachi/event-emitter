@@ -59,7 +59,7 @@
           (delete listener listeners
                   :test #'eq
                   :count 1
-				  :start start
+		  :start start
                   :key #'listener-function)))
   (values))
 
@@ -80,17 +80,17 @@
 
 (defun emit (event object &rest args)
   (let* ((listeners (listeners object event))
-		 (max-size (length listeners)))
+	 (max-size (length listeners)))
     (when (zerop max-size)
       (return-from emit nil))
-	(do ((indx 0 (1+ indx)))
-		((>= indx max-size))
-	  (apply (listener-function (elt listeners indx)) args)
-	  (when (listener-once (elt listeners indx))
-		(remove-listener object event (listener-function (elt listeners indx))
-						 :start indx)
-		(decf max-size)
-		(decf indx)))
+    (do ((indx 0 (1+ indx)))
+	((>= indx max-size))
+      (apply (listener-function (elt listeners indx)) args)
+      (when (listener-once (elt listeners indx))
+	(remove-listener object event (listener-function (elt listeners indx))
+			 :start indx)
+	(decf max-size)
+	(decf indx)))
     t))
 
 (defun listener-count (object event)
