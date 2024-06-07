@@ -13,17 +13,13 @@
 (in-package :event-emitter)
 
 (defclass event-emitter ()
-  ((silo :initform (make-hash-table :test 'eq))))
+  ((silo :initform (make-hash-table :test 'eq) :accessor silo)))
 
 (defstruct event-emitter*
   (silo (make-hash-table :test 'eq)))
 
 (defstruct (listener (:constructor make-listener (function &key once)))
   function once)
-
-(declaim (inline silo))
-(defun silo (object)
-  (slot-value object 'silo))
 
 (defun %add-listener (object event listener)
   (let* ((silo (silo object))
@@ -36,15 +32,12 @@
                             :adjustable t :fill-pointer 1
                             :initial-contents (list listener))))))
 
-(declaim (inline add-listener))
 (defun add-listener (object event listener)
   (%add-listener object event (make-listener listener)))
 
-(declaim (inline on))
 (defun on (event object listener)
   (%add-listener object event (make-listener listener)))
 
-(declaim (inline once))
 (defun once (event object listener)
   (%add-listener object event (make-listener listener :once t)))
 
@@ -65,7 +58,7 @@
 (defun remove-all-listeners (object &optional event)
   (if event
       (remhash event (silo object))
-      (setf (slot-value object 'silo)
+      (setf (silo object)
             (make-hash-table :test 'eq)))
   (values))
 
