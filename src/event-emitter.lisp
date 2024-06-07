@@ -1,4 +1,3 @@
-(in-package :cl-user)
 (defpackage event-emitter
   (:use :cl)
   (:export :event-emitter
